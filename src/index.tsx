@@ -9,36 +9,29 @@ Input:
 Output:
     *hello* world bob yay *hello*
 **/
-function FormatText(text: string) {
+function FormatText({ text }: { text: string }) {
   const [highlighted, setHighlighted] = useState("foo");
   const words = text.split(" ");
   const output = words.map(word => {
     if (word === highlighted) {
-      return (
-        <mark onMouseOver={() => setHighlighted(word)}>{word}</mark>
-      );
+      return <mark onMouseOver={() => setHighlighted(word)}>{word}</mark>;
     } else {
-      return (
-        <text onMouseOver={() => setHighlighted(word)}> {word} </text>
-      );
+      return <text onMouseOver={() => setHighlighted(word)}> {word} </text>;
     }
   });
   return <p>{output}</p>;
-}
-
-function TranslateText(srctext: string) {
-  // TODO
 }
 
 function App(props) {
   let s: string = "foo";
   const [text, setText] = useState(s);
 
-  return [
-    <textarea onChange={e => setText(e.target.value)} value={text} />,
-    <div>{FormatText(text)}</div>,
-    <div>{FormatText(text)}</div>
-  ];
+  return (
+    <div id='app-mini'>
+      <textarea onChange={e => setText(e.target.value)} value={text} />
+      <FormatText text={text} />
+    </div>
+  );
 }
 const appdiv = document.getElementById("app");
 
