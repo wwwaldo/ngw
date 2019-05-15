@@ -10,16 +10,24 @@ Output:
     *hello* world bob yay *hello*
 **/
 function FormatText({ text }: { text: string }): JSX.Element {
-  const [highlighted, setHighlighted] = useState("foo");
+  const [highlighted, setHighlighted] = useState<string | null>(null);
   const words = text.split(" ");
-  const output = words.map(word => {
-    if (word === highlighted) {
-      return <mark onMouseOver={() => setHighlighted(word)}>{word}</mark>;
-    } else {
-      return <text onMouseOver={() => setHighlighted(word)}> {word} </text>;
-    }
-  });
-  return <p>{output}</p>;
+  const output = words
+    .map((word, idx) =>
+      word === highlighted ? (
+        <mark key={idx}>{word}</mark>
+      ) : (
+        <text key={idx} onMouseOver={() => setHighlighted(word)}>
+          {word}
+        </text>
+      )
+    )
+    .reduce((prev: (JSX.Element | string)[], curr: JSX.Element | string) => {
+      prev.push(curr);
+      prev.push(" ");
+      return prev;
+    }, []);
+  return <div>{output}</div>;
 }
 
 function App({}) {
