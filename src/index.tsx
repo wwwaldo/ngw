@@ -9,7 +9,7 @@ Input:
 Output:
     *hello* world bob yay *hello*
 **/
-function FormatText({ text }: { text: string }) {
+function FormatText({ text }: { text: string }): JSX.Element {
   const [highlighted, setHighlighted] = useState("foo");
   const words = text.split(" ");
   const output = words.map(word => {
@@ -27,7 +27,7 @@ function App(props) {
   const [text, setText] = useState(s);
 
   return (
-    <div id='app-mini'>
+    <div id="app-mini">
       <textarea onChange={e => setText(e.target.value)} value={text} />
       <FormatText text={text} />
     </div>
