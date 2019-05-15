@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom";
 
 /**
 Input:
@@ -22,7 +22,7 @@ function FormatText({ text }: { text: string }): JSX.Element {
   return <p>{output}</p>;
 }
 
-function App(props) {
+function App({}) {
   let s: string = "foo";
   const [text, setText] = useState(s);
 

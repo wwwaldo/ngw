@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react",
+    "target": "es5",
+    "lib": ["es2018", "dom"]
+  },
+  "include": ["src/index.tsx"]
+}
