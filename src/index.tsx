@@ -30,6 +30,12 @@ function FormatText({ text }: { text: string }): JSX.Element {
   return <div>{output}</div>;
 }
 
+function JSXButton(): JSX.Element {
+  return (
+    <button onClick={() => console.log("button was clicked")}>Click me</button>
+  );
+}
+
 function App({}) {
   let s: string = "foo";
   const [text, setText] = useState(s);
@@ -38,6 +44,7 @@ function App({}) {
     <div id="app-mini">
       <textarea onChange={e => setText(e.target.value)} value={text} />
       <FormatText text={text} />
+      <JSXButton />
     </div>
   );
 }

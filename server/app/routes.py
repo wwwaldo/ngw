@@ -11,11 +11,14 @@ def hello():
 @app.route("/<path:path>")
 def send_src(path):
     '''
-    You can also do this using nginx/apache, but this
+    You can also do this using nginx/apache, but this soln
     works on my local computer as well (which doesn't
     have either installed).
 
     Question: How secure is this?
+    Ans: Secure enough as long as you aren't stupid
+        and put things in the 'code' directory
+        which you don't want users to be able to access.
     '''
     return send_from_directory('code', path)
 
