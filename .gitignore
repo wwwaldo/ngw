@@ -1,3 +1,5 @@
 dist/
 .cache/
 node_modules/
+server/templates
+server/app/__pycache__/
