@@ -10,15 +10,10 @@
 # 	are echoed
 
 SERVER_BASE=./server
-PORT=8089
+PORT=8008
 
 # start hotloading server.
 run-dev: start-dev-server
-	i3-msg split h
-	code &
-	sleep 1
-	i3-msg focus left
-	i3-msg split v
 	gnome-terminal -- bash -c 'ag -l | entr make build'
 
 start-dev-server:
