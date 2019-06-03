@@ -8,6 +8,21 @@ def hello():
     return render_template('./index.html', message=message)
 
 
+# temporary
+@app.route("/<asset>.png")
+def send_asset(asset):
+    return send_from_directory('static', './' + asset + '.png')
+
+
+@app.route("/<asset>.json", methods=['POST'])
+def send_json_asset(asset):
+    data = request.get_json()
+    print(data)
+    print(asset)
+    # return data
+    return
+
+
 @app.route("/<path:path>")
 def send_src(path):
     '''
