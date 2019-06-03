@@ -11,6 +11,11 @@ Output:
 **/
 function FormatText({ text }: { text: string }): JSX.Element {
   const [highlighted, setHighlighted] = useState<string | null>(null);
+
+  // TODO: mecab fetch request here!
+  //let split_text: string = await doMecabFetch({ body: text });
+  //console.log(split_text);
+
   const words = text.split(" ");
   const output = words
     .map((word, idx) =>
@@ -30,10 +35,38 @@ function FormatText({ text }: { text: string }): JSX.Element {
   return <div>{output}</div>;
 }
 
+async function doMecabFetch(text_input: { body: string }): Promise<string> {
+  let url = "spacing";
+
+  let res = await fetch(url, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(text_input)
+  })
+    .then(response => {
+      // unwrap promise by 1 level
+      return response.json();
+    })
+    .then(json => {
+      console.log(json);
+      return json;
+    })
+    .catch(error => {
+      console.log(error);
+      return "";
+    });
+  return res;
+}
+
 function JSXButton(): JSX.Element {
-  return (
-    <button onClick={() => console.log("button was clicked")}>Click me</button>
-  );
+  // A button class to test the fetch API
+
+  // wtf is this
+  let text_input = { body: "蒼い風がいま" };
+  return <button onClick={() => doMecabFetch(text_input)}>Click me</button>;
 }
 
 function App({}) {
