@@ -84,8 +84,7 @@ function JSXButton(): JSX.Element {
 }
 
 function App({}) {
-  let s: string = "foo";
-  const [text, setText] = useState(s);
+  const [text, setText] = useState("蒼い風がいま\n蒼い風がいま");
 
   return (
     <div id="app-mini">
