@@ -24,9 +24,9 @@ function FormatText({ text }: { text: string }): JSX.Element {
   });
 
   const lines = spacedText.split("\n");
-  const JSXLines: JSX.Element[] = lines.map(lineToJSX);
+  const JSXLines: JSX.Element[] = lines.map(lineToJSX).flat();
 
-  function lineToJSX(line: string): JSX.Element {
+  function lineToJSX(line: string): JSX.Element[] {
     const words = line.split(" ");
     const output = words
       .map((word, idx) =>
@@ -43,7 +43,7 @@ function FormatText({ text }: { text: string }): JSX.Element {
         prev.push(" ");
         return prev;
       }, []) as JSX.Element[];
-    return <p>{output}</p>;
+    return output.concat(<br />);
   }
 
   return <div>{JSXLines}</div>;

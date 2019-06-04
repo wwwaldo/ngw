@@ -3,7 +3,7 @@
     "strict": true,
     "jsx": "react",
     "target": "es5",
-    "lib": ["es2018", "dom"]
+    "lib": ["es2018", "dom", "esnext"]
   },
   "include": ["src/index.tsx"]
 }
