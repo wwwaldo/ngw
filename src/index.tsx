@@ -90,7 +90,6 @@ function App({}) {
     <div id="app-mini">
       <textarea onChange={e => setText(e.target.value)} value={text} />
       <FormatText text={text} />
-      <JSXButton />
     </div>
   );
 }
