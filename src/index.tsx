@@ -23,23 +23,30 @@ function FormatText({ text }: { text: string }): JSX.Element {
     fetchData();
   });
 
-  const words = spacedText.split(" ");
-  const output = words
-    .map((word, idx) =>
-      word === highlighted ? (
-        <mark key={idx}>{word}</mark>
-      ) : (
-        <text key={idx} onMouseOver={() => setHighlighted(word)}>
-          {word}
-        </text>
+  const lines = spacedText.split("\n");
+  const JSXLines: JSX.Element[] = lines.map(lineToJSX);
+
+  function lineToJSX(line: string): JSX.Element {
+    const words = line.split(" ");
+    const output = words
+      .map((word, idx) =>
+        word === highlighted ? (
+          <mark key={idx}>{word}</mark>
+        ) : (
+          <span key={idx} onMouseOver={() => setHighlighted(word)}>
+            {word}
+          </span>
+        )
       )
-    )
-    .reduce((prev: (JSX.Element | string)[], curr: JSX.Element | string) => {
-      prev.push(curr);
-      prev.push(" ");
-      return prev;
-    }, []);
-  return <div>{output}</div>;
+      .reduce((prev: (JSX.Element | string)[], curr: JSX.Element | string) => {
+        prev.push(curr);
+        prev.push(" ");
+        return prev;
+      }, []) as JSX.Element[];
+    return <p>{output}</p>;
+  }
+
+  return <div>{JSXLines}</div>;
 }
 
 async function doMecabFetch(text_input: { body: string }): Promise<string> {
