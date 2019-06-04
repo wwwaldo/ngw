@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as ReactDOM from "react-dom";
 
 /**
@@ -10,13 +10,20 @@ Output:
     *hello* world bob yay *hello*
 **/
 function FormatText({ text }: { text: string }): JSX.Element {
+  const [spacedText, setspacedText] = useState<string>("");
   const [highlighted, setHighlighted] = useState<string | null>(null);
 
-  // TODO: mecab fetch request here!
-  //let split_text: string = await doMecabFetch({ body: text });
-  //console.log(split_text);
+  // use useEffect to make stateful changes to a react component
+  useEffect(() => {
+    // wrapped async inside sync fn as crappy workaround
+    const fetchData = async () => {
+      const spacedText = await doMecabFetch({ body: text });
+      setspacedText(spacedText);
+    };
+    fetchData();
+  });
 
-  const words = text.split(" ");
+  const words = spacedText.split(" ");
   const output = words
     .map((word, idx) =>
       word === highlighted ? (
