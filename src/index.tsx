@@ -10,21 +10,23 @@ Output:
     *hello* world bob yay *hello*
 **/
 function FormatText({ text }: { text: string }): JSX.Element {
-  const [spacedText, setspacedText] = useState<string>("");
+  const [spacedText, setspacedText] = useState<string>(text);
   const [highlighted, setHighlighted] = useState<string | null>(null);
 
   // use useEffect to make stateful changes to a react component
   useEffect(() => {
     // wrapped async inside sync fn as crappy workaround
     const fetchData = async () => {
-      const spacedText = await doMecabFetch({ body: text });
-      setspacedText(spacedText);
+      const result = await doMecabFetch({ body: text });
+      setspacedText(result);
     };
     fetchData();
   });
 
   const lines = spacedText.split("\n");
-  const JSXLines: JSX.Element[] = lines.map(lineToJSX).flat();
+
+  let JSXLines: JSX.Element[] = lines.map(lineToJSX).flat();
+  JSXLines.pop(); // Remove the last <br/> --> seems to cause a weird bug if left in
 
   function lineToJSX(line: string): JSX.Element[] {
     const words = line.split(" ");
@@ -77,8 +79,6 @@ async function doMecabFetch(text_input: { body: string }): Promise<string> {
 
 function JSXButton(): JSX.Element {
   // A button class to test the fetch API
-
-  // wtf is this
   let text_input = { body: "蒼い風がいま" };
   return <button onClick={() => doMecabFetch(text_input)}>Click me</button>;
 }
