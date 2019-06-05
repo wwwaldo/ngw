@@ -2,6 +2,8 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import * as ReactDOM from "react-dom";
 
+const uuidv1 = require("uuid/v1");
+
 /**
 Input:
     hello world bob yay hello
@@ -29,26 +31,28 @@ function FormatText({ text }: { text: string }): JSX.Element {
   JSXLines.pop(); // Remove the last <br/> --> seems to cause a weird bug if left in
 
   function lineToJSX(line: string): JSX.Element[] {
-    const words = line.split(" ");
+    const words = line.split(" "); //.filter(word => word != "");
     const output = words
-      .map((word, idx) =>
-        word === highlighted ? (
-          <mark key={idx}>{word}</mark>
+      .map(word => {
+        // Do not use index to generate unique react IDs!
+        return word === highlighted ? (
+          <mark key={uuidv1()}>{word}</mark>
         ) : (
-          <span key={idx} onMouseOver={() => setHighlighted(word)}>
+          <span key={uuidv1()} onMouseOver={() => setHighlighted(word)}>
             {word}
           </span>
-        )
-      )
-      .reduce((prev: (JSX.Element | string)[], curr: JSX.Element | string) => {
+        );
+      })
+      .reduce((prev: (JSX.Element)[], curr: JSX.Element) => {
         prev.push(curr);
-        prev.push(" ");
+        prev.push(<b>&nbsp;</b>);
         return prev;
-      }, []) as JSX.Element[];
+      }, []);
+    output.pop(); // remove trailing space
     return output.concat(<br />);
   }
 
-  return <div>{JSXLines}</div>;
+  return <pre>{JSXLines}</pre>;
 }
 
 async function doMecabFetch(text_input: { body: string }): Promise<string> {
@@ -67,7 +71,6 @@ async function doMecabFetch(text_input: { body: string }): Promise<string> {
       return response.json();
     })
     .then(json => {
-      console.log(json);
       return json;
     })
     .catch(error => {
@@ -88,7 +91,11 @@ function App({}) {
 
   return (
     <div id="app-mini">
-      <textarea onChange={e => setText(e.target.value)} value={text} />
+      <textarea
+        maxlength={"3000"}
+        onChange={e => setText(e.target.value)}
+        value={text}
+      />
       <FormatText text={text} />
     </div>
   );
