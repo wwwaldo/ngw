@@ -40,13 +40,13 @@ with the Python source to disable the feature.
 # Features
 Here are some ✨hot features✨ of this project (probably only hot if you are also a developer)
 
-1. React!
+## React!
 This project uses React 16 for rendering onto the DOM.
 We use the useState and useEffect hooks for making React Components
 and some simple callback logic
 for updating the DOM in response to user events.
 
-1a. Material Design via MaterialUI
+## Material Design via MaterialUI
 This project uses Google's Material Design spec for the UI/UX, thanks to
 MaterialUI, a React implementation of the spec.
 I chose to use MaterialUI because I am not a designer and have limited experience creating my own
@@ -54,14 +54,14 @@ component designs;
 I also liked the professional look of the library, the good community support, 
 and its ease of integration into my React project.
 
-2. Fetch API and JSON endpoints
+## Fetch API and JSON endpoints
 In order to run mecab, the program is executed server-side, which means that
 the client needs to issue !asynchronous! requests.
 On the client-side we issue a POST request with the Fetch API
 and on the server side we have a JSON API endpoint.
 Now that's Real Web Dev!™
 
-3. UTF-8-encoded input?!
+## UTF-8-encoded input?!
 App handles Japanese input ✨out of the box✨ (somehow... don't ask me how).
 
 # Things I Should Really Do
