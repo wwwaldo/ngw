@@ -1,3 +1,16 @@
 #app-mini {
-  display: flex; 
+  display: flex;
+}
+
+/* Font-formatting for the 
+FormatText component
+
+TODO: Change font-size property
+so it scales with the MUI components */
+html * {
+  font-family: "Roboto", sans-serif;
+  font-size: 20;
+}
+br {
+  font-size: 20;
 }

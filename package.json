@@ -3,12 +3,16 @@
     "@types/node": "^12.0.4",
     "@types/react": "^16.8.17",
     "@types/react-dom": "^16.8.4",
+    "@types/uuid": "^3.4.4",
     "cssnano": "^4.1.10",
     "typescript": "^3.4.5"
   },
   "dependencies": {
+    "@material-ui/core": "^4.0.2",
+    "@material-ui/icons": "^4.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "typeface-roboto": "0.0.54",
     "uuid": "^3.3.2"
   }
 }

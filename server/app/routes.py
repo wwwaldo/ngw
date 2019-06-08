@@ -28,6 +28,7 @@ def send_json_asset(asset):
 
 @app.route('/spacing', methods=['POST'])
 def spacing():
+    # To-do: input sanitization?
     post_data = request.get_json()
     try:
         mecab_input = post_data['body']
