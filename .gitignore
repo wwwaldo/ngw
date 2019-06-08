@@ -4,3 +4,4 @@ node_modules/
 server/app/templates/
 server/app/code/
 server/app/__pycache__/
+server/venv/
