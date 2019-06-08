@@ -1,4 +1,3 @@
-from threading import Thread
 import subprocess
 
 from pykakasi import kakasi
@@ -55,6 +54,9 @@ def run_kakasi(text_input):
         k.setMode("r", "Hepburn")
         kakasi_converter = k.getConverter()
 
+    # Use mecab instead of kakasi's wakati feature
+    # to do spacing between Japanese kanji
+    # because mecab has better spacing prediction
     return kakasi_converter.do(mecab(text_input)).strip()
 
 
