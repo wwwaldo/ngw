@@ -57,6 +57,7 @@ const useStyles = makeStyles(theme => ({
 export default function TranslateCard() {
   const classes = useStyles();
   let [text, setText] = useState("蒼い風がいま\n蒼い風がいま");
+  let [isRomanji, setIsRomanji] = useState(true);
 
   return (
     <Card className={classes.card}>
@@ -66,6 +67,7 @@ export default function TranslateCard() {
             <IconButton
               size="small"
               aria-label={"Convert romanji/kanji output"}
+              onClick={() => setIsRomanji(!isRomanji)}
             >
               <TranslateIcon fontSize="inherit" />
             </IconButton>
@@ -104,7 +106,7 @@ export default function TranslateCard() {
                 multiline
                 id="formatted-text-mask-input"
                 inputComponent={JapaneseFormatterInput}
-                inputProps={{ text: text }}
+                inputProps={{ text: text, isRomanji: isRomanji }}
               />
             </FormControl>
           </div>

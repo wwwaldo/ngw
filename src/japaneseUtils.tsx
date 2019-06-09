@@ -6,9 +6,9 @@ import uuidv1 = require("uuid/v1");
 
 // @ts-ignore
 export default function JapaneseFormatterInput(props) {
-  const { inputRef, onChange, text, ...other } = props;
+  const { inputRef, onChange, text, isRomanji, ...other } = props;
 
-  return <JapaneseFormatter text={text} />;
+  return <JapaneseFormatter text={text} isRomanji={isRomanji} />;
 }
 
 JapaneseFormatterInput.propTypes = {
@@ -16,7 +16,13 @@ JapaneseFormatterInput.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 
-function JapaneseFormatter({ text }: { text: string }): JSX.Element {
+function JapaneseFormatter({
+  text,
+  isRomanji
+}: {
+  text: string;
+  isRomanji: boolean;
+}): JSX.Element {
   /*
     JSX Element.
   
@@ -30,7 +36,9 @@ function JapaneseFormatter({ text }: { text: string }): JSX.Element {
   useEffect(() => {
     // wrapped async inside sync fn as crappy workaround
     const fetchData = async () => {
-      const result = await doMecabFetch({ body: text });
+      const result = isRomanji
+        ? await doRomanjiFetch({ body: text })
+        : await doMecabFetch({ body: text });
       setspacedText(result);
     };
     fetchData();
@@ -68,7 +76,20 @@ function JapaneseFormatter({ text }: { text: string }): JSX.Element {
 
 async function doMecabFetch(text_input: { body: string }): Promise<string> {
   let url = "spacing";
+  return doAssetFetch(text_input, url);
+}
 
+async function doRomanjiFetch(text_input: { body: string }): Promise<string> {
+  let url = "romanji";
+  let tmp = doAssetFetch(text_input, url);
+  console.log(tmp);
+  return tmp;
+}
+
+async function doAssetFetch(
+  text_input: { body: string },
+  url: string
+): Promise<string> {
   let res = await fetch(url, {
     method: "POST",
     mode: "cors",

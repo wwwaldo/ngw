@@ -1,29 +1,12 @@
 from flask import jsonify, request, render_template, send_from_directory
 from app import app
-from app.mecab import mecab
+from app.mecab import mecab, run_kakasi
 
 
 @app.route("/")
 def hello():
     message = "Hello, World"
     return render_template('./index.html', message=message)
-
-
-# temporary
-@app.route("/<asset>.png")
-def send_asset(asset):
-    return send_from_directory('static', './' + asset + '.png')
-
-
-@app.route("/<asset>.json", methods=['POST'])
-def send_json_asset(asset):
-    data = request.get_json()
-    print(data)
-    print(data.keys())
-
-    print(asset)
-    # return data
-    return data
 
 
 @app.route('/spacing', methods=['POST'])
@@ -33,7 +16,19 @@ def spacing():
     try:
         mecab_input = post_data['body']
         output = mecab(mecab_input)
-        print(jsonify({'body': output}))
+        return jsonify(output)
+
+    except KeyError as e:
+        print('Keyerror ', e)
+
+
+@app.route('/romanji', methods=['POST'])
+def romanji():
+    # To-do: input sanitization?
+    post_data = request.get_json()
+    try:
+        mecab_input = post_data['body']
+        output = run_kakasi(mecab_input)
         return jsonify(output)
 
     except KeyError as e:
