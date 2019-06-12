@@ -51,21 +51,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function WordCard({ word }: { word: string }) {
+export default function WordCard({
+  kanji,
+  romanji
+}: {
+  kanji: string;
+  romanji: string;
+}) {
   const classes = useStyles();
-
-  // Somewhat inefficient fetch for converting currently selected word
-  // to romanji
-  let [romanji, setRomanji] = useState("");
-  let [kanji, setKanji] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setKanji(await doMecabFetch({ body: word }));
-      setRomanji(await doRomanjiFetch({ body: word }));
-    };
-    fetchData();
-  });
 
   return (
     <Card className={classes.card}>

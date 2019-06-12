@@ -20,7 +20,7 @@ import {
   Button,
   Link
 } from "@material-ui/core";
-import { doMecabFetch } from "./japaneseUtils";
+import { getWordIndex } from "./japaneseUtils";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -56,36 +56,54 @@ function MadeWithLove() {
   );
 }
 
+function Header() {
+  const classes = useStyles();
+
+  return (
+    <AppBar position="absolute" className={classes.appBar}>
+      <Toolbar>
+        <Typography className={classes.title} variant="h6">
+          Dashboard
+        </Typography>
+        <Button className={classes.menuButton}>About</Button>
+        <Button className={classes.menuButton}>Other</Button>
+      </Toolbar>
+    </AppBar>
+  );
+}
+
 function App() {
   const classes = useStyles();
 
-  let [selectedWord, setSelectedWord] = useState("");
-  let [selectedWordIndex, setSelectedWordIndex] = useState(0);
+  // TODO: Refactor TranslateCard to update these when text field changes.
+  let [kanjiText, setKanjiText] = useState("蒼い 風 が いま");
+  let [romanjiText, setRomanjiText] = useState("aoi kaze ga ima");
+  let [selectedKanji, setSelectedKanji] = useState("風"); // todo
+  let props = {
+    kanjiText,
+    setKanjiText,
+    romanjiText,
+    setRomanjiText,
+    selectedKanji,
+    setSelectedKanji
+  };
+
+  let getRomanjiEquivalent = (w: string): string =>
+    romanjiText.split(" ")[getWordIndex(kanjiText, w)];
+
+  let getKanjiEquivalent = (w: string): string =>
+    kanjiText.split(" ")[getWordIndex(romanjiText, w)];
 
   return (
     <div>
-      {/* Header App-bar */}
-      <AppBar position="absolute" className={classes.appBar}>
-        <Toolbar>
-          <Typography className={classes.title} variant="h6">
-            Dashboard
-          </Typography>
-          <Button className={classes.menuButton}>About</Button>
-          <Button className={classes.menuButton}>Other</Button>
-        </Toolbar>
-      </AppBar>
-
       <main>
+        <Header />
         {/* spacer element! use this to pad between container and menubar */}
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={6}>
-              <TranslateCard
-                onChange={word => {
-                  setSelectedWord(word); // bug..
-                }}
-              />
+              <TranslateCard {...props} />
             </Grid>
             <Grid
               item
@@ -97,10 +115,13 @@ function App() {
               flex-direction={"column"}
             >
               <Grid item lg={12}>
-                <WordCard word={selectedWord} />
+                <WordCard
+                  kanji={selectedKanji}
+                  romanji={getRomanjiEquivalent(selectedKanji)}
+                />
               </Grid>
               <Grid item lg={12}>
-                <JishoWordCard kanji={selectedWord} />
+                <JishoWordCard kanji={selectedKanji} />
               </Grid>
             </Grid>
           </Grid>

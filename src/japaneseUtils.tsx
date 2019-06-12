@@ -4,13 +4,9 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import uuidv1 = require("uuid/v1");
 
-// @ts-ignore
-export default function JapaneseFormatterInput(props) {
-  const { inputRef, onChange, text, isRomanji, ...other } = props;
-
-  return (
-    <JapaneseFormatter text={text} isRomanji={isRomanji} onChange={onChange} />
-  );
+export default function JapaneseFormatterInput(props: any) {
+  //@ts-ignore
+  return <JapaneseFormatter {...props} />;
 }
 
 JapaneseFormatterInput.propTypes = {
@@ -18,14 +14,18 @@ JapaneseFormatterInput.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 
-function JapaneseFormatter({
-  text,
-  isRomanji,
-  onChange
-}: {
-  text: string;
-  isRomanji: boolean;
-  onChange: (e: string) => void;
+export function getWordIndex(text: string, word: string): number {
+  // Get the first 'space' index of [word] in [text].
+  // Valid inputs: Kanji or romanji text as string, after JSON fetch.
+  return text.split(" ").findIndex(w => w === word);
+}
+
+function JapaneseFormatter(props: {
+  isRomanji: any;
+  kanjiText: string;
+  romanjiText: string;
+  selectedKanji: string;
+  setSelectedKanji: (arg0: string) => void;
 }): JSX.Element {
   /*
     JSX Element.
@@ -33,20 +33,17 @@ function JapaneseFormatter({
     Highlights text on mouse hover;
     text should be passed from parent component (currently named 'App'.)
     */
-  const [spacedText, setspacedText] = useState<string>(text);
-  const [highlighted, setHighlighted] = useState<string | null>(null);
+  let spacedText = props.isRomanji ? props.romanjiText : props.kanjiText;
 
-  // use useEffect to make stateful changes to a react component
-  useEffect(() => {
-    // wrapped async inside sync fn as crappy workaround
-    const fetchData = async () => {
-      const result = isRomanji
-        ? await doRomanjiFetch({ body: text })
-        : await doMecabFetch({ body: text });
-      setspacedText(result);
-    };
-    fetchData();
-  });
+  let getRomanjiEquivalent = (w: string): string =>
+    props.romanjiText.split(" ")[getWordIndex(props.kanjiText, w)];
+
+  let getKanjiEquivalent = (w: string): string =>
+    props.kanjiText.split(" ")[getWordIndex(props.romanjiText, w)];
+
+  let highlighted = props.isRomanji
+    ? getRomanjiEquivalent(props.selectedKanji)
+    : props.selectedKanji;
 
   const lines = spacedText.split("\n");
 
@@ -64,8 +61,9 @@ function JapaneseFormatter({
           <span
             key={uuidv1()}
             onMouseOver={() => {
-              setHighlighted(word);
-              onChange(word);
+              props.setSelectedKanji(
+                props.isRomanji ? getKanjiEquivalent(word) : word
+              );
             }}
           >
             {word}
@@ -88,6 +86,7 @@ export async function doMecabFetch(text_input: {
   body: string;
 }): Promise<string> {
   let url = "spacing";
+
   return doAssetFetch(text_input, url);
 }
 
@@ -95,6 +94,7 @@ export async function doRomanjiFetch(text_input: {
   body: string;
 }): Promise<string> {
   let url = "romanji";
+
   let tmp = doAssetFetch(text_input, url);
   console.log(tmp);
   return tmp;
