@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 import PropTypes from "prop-types";
 import uuidv1 = require("uuid/v1");
+import { trim } from "jquery";
 
 export default function JapaneseFormatterInput(props: any) {
   //@ts-ignore
@@ -17,7 +18,10 @@ JapaneseFormatterInput.propTypes = {
 export function getWordIndex(text: string, word: string): number {
   // Get the first 'space' index of [word] in [text].
   // Valid inputs: Kanji or romanji text as string, after JSON fetch.
-  return text.split(" ").findIndex(w => w === word);
+  return text
+    .split(" ")
+    .map(trim)
+    .findIndex(w => w === word); // buggy bc newlines :(
 }
 
 function JapaneseFormatter(props: {
@@ -36,10 +40,10 @@ function JapaneseFormatter(props: {
   let spacedText = props.isRomanji ? props.romanjiText : props.kanjiText;
 
   let getRomanjiEquivalent = (w: string): string =>
-    props.romanjiText.split(" ")[getWordIndex(props.kanjiText, w)];
+    props.romanjiText.split(" ").map(trim)[getWordIndex(props.kanjiText, w)];
 
   let getKanjiEquivalent = (w: string): string =>
-    props.kanjiText.split(" ")[getWordIndex(props.romanjiText, w)];
+    props.kanjiText.split(" ").map(trim)[getWordIndex(props.romanjiText, w)];
 
   let highlighted = props.isRomanji
     ? getRomanjiEquivalent(props.selectedKanji)
@@ -96,7 +100,6 @@ export async function doRomanjiFetch(text_input: {
   let url = "romanji";
 
   let tmp = doAssetFetch(text_input, url);
-  console.log(tmp);
   return tmp;
 }
 

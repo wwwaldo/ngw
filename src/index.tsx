@@ -9,6 +9,7 @@ import JishoWordCard from "./JishoWordCard";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
+import { trim } from "jquery";
 
 import "typeface-roboto";
 
@@ -89,10 +90,7 @@ function App() {
   };
 
   let getRomanjiEquivalent = (w: string): string =>
-    romanjiText.split(" ")[getWordIndex(kanjiText, w)];
-
-  let getKanjiEquivalent = (w: string): string =>
-    kanjiText.split(" ")[getWordIndex(romanjiText, w)];
+    romanjiText.split(" ").map(trim)[getWordIndex(kanjiText, w)];
 
   return (
     <div>
