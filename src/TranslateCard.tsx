@@ -54,7 +54,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function TranslateCard() {
+// TODO: refactor this as a class-based component
+// so you can change the highlighted word
+// by passing in an onchange event
+export default function TranslateCard({
+  onChange
+}: {
+  onChange: (e: string) => void;
+}): JSX.Element {
   const classes = useStyles();
   let [text, setText] = useState("蒼い風がいま\n蒼い風がいま");
   let [isRomanji, setIsRomanji] = useState(true);
@@ -88,7 +95,9 @@ export default function TranslateCard() {
               defaultValue={text}
               className={classes.textField}
               margin="normal"
-              onChange={e => setText(e.target.value)}
+              onChange={e => {
+                setText(e.target.value);
+              }}
               variant="outlined"
             />
           </div>
@@ -106,7 +115,11 @@ export default function TranslateCard() {
                 multiline
                 id="formatted-text-mask-input"
                 inputComponent={JapaneseFormatterInput}
-                inputProps={{ text: text, isRomanji: isRomanji }}
+                inputProps={{
+                  text: text,
+                  isRomanji: isRomanji,
+                  onChange: onChange
+                }}
               />
             </FormControl>
           </div>

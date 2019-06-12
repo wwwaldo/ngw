@@ -8,7 +8,9 @@ import uuidv1 = require("uuid/v1");
 export default function JapaneseFormatterInput(props) {
   const { inputRef, onChange, text, isRomanji, ...other } = props;
 
-  return <JapaneseFormatter text={text} isRomanji={isRomanji} />;
+  return (
+    <JapaneseFormatter text={text} isRomanji={isRomanji} onChange={onChange} />
+  );
 }
 
 JapaneseFormatterInput.propTypes = {
@@ -18,10 +20,12 @@ JapaneseFormatterInput.propTypes = {
 
 function JapaneseFormatter({
   text,
-  isRomanji
+  isRomanji,
+  onChange
 }: {
   text: string;
   isRomanji: boolean;
+  onChange: (e: string) => void;
 }): JSX.Element {
   /*
     JSX Element.
@@ -57,7 +61,13 @@ function JapaneseFormatter({
         return word === highlighted ? (
           <mark key={uuidv1()}>{word}</mark>
         ) : (
-          <span key={uuidv1()} onMouseOver={() => setHighlighted(word)}>
+          <span
+            key={uuidv1()}
+            onMouseOver={() => {
+              setHighlighted(word);
+              onChange(word);
+            }}
+          >
             {word}
           </span>
         );
@@ -74,12 +84,16 @@ function JapaneseFormatter({
   return <pre>{JSXLines}</pre>;
 }
 
-async function doMecabFetch(text_input: { body: string }): Promise<string> {
+export async function doMecabFetch(text_input: {
+  body: string;
+}): Promise<string> {
   let url = "spacing";
   return doAssetFetch(text_input, url);
 }
 
-async function doRomanjiFetch(text_input: { body: string }): Promise<string> {
+export async function doRomanjiFetch(text_input: {
+  body: string;
+}): Promise<string> {
   let url = "romanji";
   let tmp = doAssetFetch(text_input, url);
   console.log(tmp);
