@@ -86,19 +86,8 @@ class MyMobileStepper extends React.Component<
     let activeStep = this.state.activeStep;
     let numSteps = this.state.numSteps;
 
-    let setNumSteps = (step: number) => {
-      this.setState({ numSteps: step });
-    };
-
     return (
       <div>
-        <Button
-          onClick={() =>
-            numSteps > 8 ? setNumSteps(numSteps - 1) : setNumSteps(numSteps + 1)
-          }
-        >
-          Hii
-        </Button>
         <MobileStepper
           variant={"text"}
           steps={numSteps}
@@ -139,19 +128,35 @@ export default function JishoWordCard({ kanji }: { kanji: string }) {
 
   // Somewhat inefficient fetch for converting currently selected kanji
   // to romanji
-  let [jishoResult, setJishoResult] = useState({});
-  let counter = 5;
+  let [jishoResult, setJishoResult] = useState({
+    slug: "testing",
+    senses: ["oopsie.."]
+  });
   const here = useRef(null);
 
-  /** 
   useEffect(() => {
     const fetchData = async () => {
-      let definitionJSON = doDefinitionFetch(kanji);
+      let definitionJSON = await doDefinitionFetch(kanji);
       setJishoResult(definitionJSON);
     };
     fetchData();
   });
-  */
+
+  function displayResults(jisho: {
+    slug: string;
+    senses: any[];
+    [key: string]: any;
+  }) {
+    if (jisho != null) {
+      let i = 0;
+      if (here.current != null) {
+        i = here.current.state.activeStep;
+      }
+      return JSON.stringify(jisho.senses[i]);
+    } else {
+      return ":(";
+    }
+  }
 
   return (
     <Card className={classes.card}>
@@ -160,17 +165,17 @@ export default function JishoWordCard({ kanji }: { kanji: string }) {
           {kanji}
         </Typography>
         <Button
-          onClick={e => {
-            console.log(here.current);
+          onClick={async e => {
+            let definitionJSON = await doDefinitionFetch(kanji);
+            setJishoResult(definitionJSON);
+            console.log(jishoResult);
           }}
         >
-          Click me ..
+          Click me ...
         </Button>
 
         <Typography variant={"body1"} align={"left"}>
-          {"TODO: ping the Jisho API with a request\n"}
-          {kanji}
-          {"\n\n"}
+          {displayResults(jishoResult)}
         </Typography>
 
         <div>

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 
-import PropTypes from "prop-types";
+//import { PropTypes } from "prop-types";
 import uuidv1 = require("uuid/v1");
 import { trim } from "jquery";
 
@@ -10,10 +10,11 @@ export default function JapaneseFormatterInput(props: any) {
   return <JapaneseFormatter {...props} />;
 }
 
+/*
 JapaneseFormatterInput.propTypes = {
   inputRef: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired
-};
+}; */
 
 export function getWordIndex(text: string, word: string): number {
   // Get the first 'space' index of [word] in [text].
@@ -116,15 +117,19 @@ export async function doDefinitionFetch(word: string) {
       return response.json();
     })
     .then(jsonResponse => {
-      //@ts-ignore
-      jsonResponse["data"].filter(entry => {
-        return entry.hasOwnProperty("slug") && entry.slug === word;
-      });
+      return jsonResponse["data"].filter(
+        (entry: { slug: string; [key: string]: any }) => {
+          return entry.hasOwnProperty("slug") && entry.slug === word;
+        }
+      )[0];
     })
     .catch(error => console.log(error));
 
   return res;
 }
+
+/* Code architecture -- what's *that*?! */
+/* sob sob sob */
 
 async function doAssetFetch(
   text_input: { body: string },

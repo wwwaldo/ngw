@@ -62,7 +62,7 @@ export default function WordCard({
 
   return (
     <Card className={classes.card}>
-      <Typography color={"textPrimary"} variant={"h2"} align={"center"}>
+      <Typography color={"textPrimary"} variant={"h1"} align={"center"}>
         {kanji}
       </Typography>
       <Typography color={"textSecondary"} variant={"h4"} align={"center"}>
