@@ -103,6 +103,29 @@ export async function doRomanjiFetch(text_input: {
   return tmp;
 }
 
+/* Jisho api request */
+export async function doDefinitionFetch(word: string) {
+  let corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
+  let jishoUrl = "https://jisho.org/api/v1/search/words?keyword=" + word;
+  let url = corsProxyUrl + jishoUrl;
+  let res = await fetch(url, {
+    method: "GET",
+    mode: "cors"
+  })
+    .then(response => {
+      return response.json();
+    })
+    .then(jsonResponse => {
+      //@ts-ignore
+      jsonResponse["data"].filter(entry => {
+        return entry.hasOwnProperty("slug") && entry.slug === word;
+      });
+    })
+    .catch(error => console.log(error));
+
+  return res;
+}
+
 async function doAssetFetch(
   text_input: { body: string },
   url: string
