@@ -71,7 +71,7 @@ class MyMobileStepper extends React.Component<
 > {
   constructor(props: any) {
     super(props);
-    this.state = { activeStep: 1, numSteps: 5 };
+    this.state = { activeStep: 0, numSteps: 1 };
   }
 
   handleNext = () => {
@@ -140,6 +140,10 @@ export default function JishoWordCard({ kanji }: { kanji: string }) {
       setJishoResult(definitionJSON);
     };
     fetchData();
+    // bad non-reacty updates
+    if (here.current != null && jishoResult != null) {
+      here.current.state.numSteps = jishoResult.senses.length;
+    }
   });
 
   function displayResults(jisho: {
