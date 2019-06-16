@@ -105,6 +105,19 @@ export async function doRomanjiFetch(text_input: {
 }
 
 /* Jisho api request */
+
+// A loose and slightly hacky way to type a result from the Jisho API.
+// [key: string] : any --> list of all other args.
+export type JishoSense = { english_definitions: string[]; [key: string]: any };
+export type JishoJapaneseWord = { word: string; reading: string };
+export type JishoResult = {
+  slug: string;
+  jlpt: string;
+  senses: JishoSense[];
+  japanese: JishoJapaneseWord[];
+  [key: string]: any;
+};
+
 export async function doDefinitionFetch(word: string) {
   let corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
   let jishoUrl = "https://jisho.org/api/v1/search/words?keyword=" + word;
@@ -117,11 +130,45 @@ export async function doDefinitionFetch(word: string) {
       return response.json();
     })
     .then(jsonResponse => {
-      return jsonResponse["data"].filter(
-        (entry: { slug: string; [key: string]: any }) => {
-          return entry.hasOwnProperty("slug") && entry.slug === word;
+      let responses = jsonResponse["data"].filter((entry: JishoResult) => {
+        // Oh ok, the jisho API actually exposes the japanese!
+        // Check that either the kanji reading or if that fails,
+        // the hiragana reading, matches the input kanji.
+        return entry.japanese.some((jEntry: JishoJapaneseWord) => {
+          //console.log(jEntry);
+          return jEntry.word === word || jEntry.reading === word;
+        });
+      });
+      if (responses.length > 0) {
+        if (responses.length > 1) {
+          console.log("doDefinitionFetch: got multiple matches");
         }
-      )[0];
+        return responses[0];
+      } else {
+        // TODO : clean up after yourself, i.e.
+        // Run Mecab-verb analysis.
+
+        // Errors that can happen:
+        // - common hiragana is used instead of kanji (e.g. ima -> now),
+        // most common response is filtered out.
+
+        // - conjugated form of verb is not recognized by jisho:
+        //   yurusa reta -> mecab. is filtered to ?? + suffix by jisho
+        //   solution: ping server to check that your thing is a verb,
+        //   then use mecab's unconjugated form, and send that to jisho.
+
+        //  this implies that your app should keep an internal representation
+        //  of a japanese word which might be defined by a lightweight class..
+
+        // What to do if multiple approximate matches?
+        // Show a yellow alert to the user.
+
+        // Ok, let's see if we can catch some other common cases.
+
+        throw new Error(
+          "doDefinitionFetch: Response from Jisho server was empty after filter. :("
+        );
+      }
     })
     .catch(error => console.log(error));
 
