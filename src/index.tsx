@@ -21,7 +21,7 @@ import {
   Button,
   Link
 } from "@material-ui/core";
-import { getWordIndex } from "./japaneseUtils";
+import { getWordIndex, doRomanjiFetch } from "./japaneseUtils";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -73,13 +73,61 @@ function Header() {
   );
 }
 
+class ClassApp extends React.Component<
+  {},
+  { kanjiText: string; romanjiText: string; selectedKanji: string }
+> {
+  constructor(props: Readonly<{}>) {
+    super(props);
+
+    let initialText = `Explore song lyrics by hovering over the characters, eg.
+
+    白鳥たちはそう 
+    見えないとこでバタ足するんです 
+    
+    Input your own song lyrics by clicking the explorer.
+
+    Highlighted characters' definitions pop up in the right box.
+
+    Have fun!
+    `;
+
+    this.state = {
+      kanjiText: initialText,
+      romanjiText: "",
+      selectedKanji: initialText[0]
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        Still working on this... Need to learn about higher-order components in
+        order to use the MUI styling solution.
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    // Setting the romanjitext currently requires fetching from Mecab.
+    // So it makes sense to do the fetch when the component mounts.
+    // Apparently "this can lead to performance issues"
+    // because this double-renders the component. See React docs.
+    let f = async () => {
+      let romanjiText = await doRomanjiFetch({ body: this.state.kanjiText });
+      this.setState({ romanjiText: romanjiText });
+    };
+    f();
+  }
+}
+
 function App() {
   const classes = useStyles();
 
   // TODO: Refactor TranslateCard to update these when text field changes.
   let [kanjiText, setKanjiText] = useState("蒼い 風 が いま");
   let [romanjiText, setRomanjiText] = useState("aoi kaze ga ima");
-  let [selectedKanji, setSelectedKanji] = useState("風"); // todo
+  let [selectedKanji, setSelectedKanji] = useState("が"); // todo
   let props = {
     kanjiText,
     setKanjiText,
