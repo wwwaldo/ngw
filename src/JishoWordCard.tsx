@@ -11,6 +11,8 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 import "typeface-roboto";
 
+import MockWordCard from "./MockWordCard";
+
 import {
   IconButton,
   TextField,
@@ -119,7 +121,12 @@ class MyMobileStepper extends React.Component<
   }
 }
 
+// test the mock word card class.
 export default function JishoWordCard({ kanji }: { kanji: string }) {
+  return <RealJishoWordCard kanji={kanji} />; //<MockWordCard kanji={kanji} />;
+}
+
+export function RealJishoWordCard({ kanji }: { kanji: string }) {
   const classes = useStyles();
 
   // TODO: store the state of the API request into
@@ -133,17 +140,31 @@ export default function JishoWordCard({ kanji }: { kanji: string }) {
   });
   const here = useRef(null);
 
+  // see https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect
+  // for explanation of second arg. is important!!
   useEffect(() => {
     const fetchData = async () => {
       let definitionJSON = await doDefinitionFetch(kanji);
       setJishoResult(definitionJSON);
+      console.log("fetched data...");
     };
     fetchData();
     // bad non-reacty updates
     if (here.current != null && jishoResult != null) {
       here.current.state.numSteps = jishoResult.senses.length;
     }
-  });
+  }, [kanji]); // ok, so including the second arg fixes the 'keeps firing lolol' issue,
+  // but messes up the state control.
+  // I think that even though this 'fixes' things that it's better to just
+  // port this particular component to a class..
+  // the other problem that I am having is that I'm using a ref to change the state of
+  // the interior mobile stepper
+  // this is because mui's mobile stepper class doesn't seem to automatically
+  // re-render when I pass in new props, which is ??
+  // oh..... wait......... could it be that this is occurring
+  // because I didn't write any class fn's? --> no i don't think so..
+  // I think that a re-render of the prop should be triggered
+  // whenever i pass a new value of a prop into my child component...
 
   function displayResults(jisho: {
     slug: string;
