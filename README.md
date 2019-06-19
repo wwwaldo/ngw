@@ -80,3 +80,42 @@ Ok, actually no don't do this (i'm flattered though)
 To-do with live demo. Expose the Flask app via WSGI on personal server;
 use Makefile script to build App and deploy on Linux.
 
+# More on Deployment
+
+Steps not in my makefile:
+
+Make venv. Used 'virtualenv'.
+
+exact command is
+
+`cd server
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt`
+
+You can check that the correct venv pip is being used by running `which pip`.
+
+This installs flask, pykakasi.
+
+Also install mecab:
+
+`sudo apt-get install mecab`
+
+this uses the digitalocean mirrors of the ubuntu upstream.
+
+Then to run the dev server:
+
+Use `make build` with venv activated and wait for parcel.
+
+Use `make run-dev-server` to run a server on localhost.
+
+Use *port forwarding* on ssh to see the dev server from client laptop:
+
+`ssh -L EXPOSED_PORT:localhost:EXPOSED_PORT user@sshipaddr`
+
+I installed ag and entr today but didn't need to...
+
+end result: 
+Can go to `localhost:EXPOSED_PORT` to view the app from the client.
+
+todo-maybe : automake venv into Makefile.
