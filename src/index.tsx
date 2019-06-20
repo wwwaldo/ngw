@@ -100,25 +100,25 @@ function App() {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={6}>
+            <Grid item xs={12} md={12} lg={6}>
               <TranslateCard {...props} />
             </Grid>
             <Grid
               item
               container
               xs={12}
-              md={4}
+              md={12}
               lg={6}
               spacing={2}
               flex-direction={"column"}
             >
-              <Grid item lg={12}>
+              <Grid item xs={12}>
                 <WordCard
                   kanji={selectedKanji}
                   romanji={getRomanjiEquivalent(selectedKanji)}
                 />
               </Grid>
-              <Grid item lg={12}>
+              <Grid item xs={12}>
                 <JishoWordCard kanji={selectedKanji} />
               </Grid>
             </Grid>
