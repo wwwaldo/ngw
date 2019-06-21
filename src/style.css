@@ -17,3 +17,15 @@ br {
 .span {
   font-size: 20;
 }
+
+/* The japanese formatter input uses pre tags,
+which don't wrap by default and overflow the form input
+setting this style wraps the text in the pre tag
+correctly, at least on chrome.
+
+...Shoot, it doesn't work for romanji? only kanji?
+*/
+
+pre {
+  white-space: pre-wrap;
+}

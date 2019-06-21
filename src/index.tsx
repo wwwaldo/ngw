@@ -24,16 +24,20 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
+  Card,
+  Box
 } from "@material-ui/core";
 import { getWordIndex, doRomanjiFetch } from "./japaneseUtils";
+import { withStyles } from "@material-ui/styles";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   /* styles for drawer. */
   root: {
-    display: "flex"
+    display: "flex",
+    justifyContent: "center"
   },
   drawer: {
     width: drawerWidth,
@@ -56,9 +60,7 @@ const useStyles = makeStyles(theme => ({
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto"
+    flexGrow: 1
   },
   menuButton: {
     marginRight: theme.spacing(2)
@@ -197,8 +199,9 @@ function App() {
 
   return (
     <div className={classes.root}>
-      <main>
-        <Header />
+      <CssBaseline />
+      <Header />
+      <main className={classes.content}>
         {/* spacer element! use this to pad between container and menubar */}
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
@@ -212,7 +215,7 @@ function App() {
               xs={12}
               md={12}
               lg={6}
-              spacing={2}
+              spacing={3}
               flex-direction={"column"}
             >
               <Grid item xs={12}>
@@ -222,6 +225,12 @@ function App() {
                 />
               </Grid>
               <Grid item xs={12}>
+                {/* <WordCard
+                  kanji={selectedKanji}
+                  romanji={getRomanjiEquivalent(selectedKanji)}
+                /> */}
+                {/* Use duplicate word cards instead of a jisho card
+                 because I think the re-render flexy bug is because of flexbox.*/}
                 <JishoWordCard kanji={selectedKanji} />
               </Grid>
             </Grid>

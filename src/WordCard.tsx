@@ -28,26 +28,8 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column"
   },
   card: {
-    border: theme.spacing(2),
     padding: theme.spacing(2),
-    overflow: "auto",
-    flexDirection: "column",
-    width: "100%"
-  },
-  content: {
-    display: "flex",
-    flexDirection: "row",
-    overflow: "auto",
-    alignItems: "left",
-    justifyContent: "left"
-  },
-  inputPanel: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  outputPanel: {
-    leftPadding: theme.spacing(2),
-    width: "65%"
+    overflow: "auto"
   }
 }));
 
