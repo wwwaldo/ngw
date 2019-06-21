@@ -19,11 +19,30 @@ import {
   CssBaseline,
   makeStyles,
   Button,
-  Link
+  Link,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider
 } from "@material-ui/core";
 import { getWordIndex, doRomanjiFetch } from "./japaneseUtils";
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles(theme => ({
+  /* styles for drawer. */
+  root: {
+    display: "flex"
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0
+  },
+  drawerPaper: {
+    width: drawerWidth
+  },
+  /* older styles ... */
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4)
@@ -32,7 +51,8 @@ const useStyles = makeStyles(theme => ({
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
-    })
+    }),
+    zIndex: theme.zIndex.drawer + 1
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
@@ -48,6 +68,40 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+/* The drawer on the right side of the app. */
+function AppDrawer() {
+  const classes = useStyles();
+  return (
+    <Drawer
+      className={classes.drawer}
+      variant="permanent"
+      classes={{
+        paper: classes.drawerPaper
+      }}
+      anchor="right"
+    >
+      <div className={classes.appBarSpacer} />
+      <Divider />
+      <List>
+        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {["All mail", "Trash", "Spam"].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
+  );
+}
+
+/* The attribution text at the bottom of the app. */
 function MadeWithLove() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -57,6 +111,7 @@ function MadeWithLove() {
   );
 }
 
+/* The app bar. */
 function Header() {
   const classes = useStyles();
 
@@ -141,7 +196,7 @@ function App() {
     romanjiText.split(" ").map(trim)[getWordIndex(kanjiText, w)];
 
   return (
-    <div>
+    <div className={classes.root}>
       <main>
         <Header />
         {/* spacer element! use this to pad between container and menubar */}
@@ -174,6 +229,9 @@ function App() {
         </Container>
         <MadeWithLove />
       </main>
+      <aside>
+        <AppDrawer />
+      </aside>
     </div>
   );
 }
