@@ -26,7 +26,8 @@ import {
   ListItemText,
   Divider,
   Card,
-  Box
+  Box,
+  ListSubheader
 } from "@material-ui/core";
 import { getWordIndex, doRomanjiFetch } from "./japaneseUtils";
 import { withStyles } from "@material-ui/styles";
@@ -70,6 +71,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+function todoAlert() {
+  alert("Haven't implemented this feature yet...Sorry!");
+}
+
 /* The drawer on the right side of the app. */
 function AppDrawer() {
   const classes = useStyles();
@@ -85,19 +90,30 @@ function AppDrawer() {
       <div className={classes.appBarSpacer} />
       <Divider />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListSubheader>
+          <ListItemText primary={"Options"} />
+        </ListSubheader>
+        {/* Options for the Main View */}
+        {["Toggle Kanji/Romanji on Highlight", "Export Default Flashcards"].map(
+          (text, index) => (
+            <ListItem button key={text} onClick={todoAlert}>
+              <ListItemText primary={text} />
+            </ListItem>
+          )
+        )}
       </List>
       <Divider />
       <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListSubheader>
+          <ListItemText primary={"Explore this Passage"} />
+        </ListSubheader>
+        {["Create Flashcards", "Run Anki session", "Flashcard histogram.."].map(
+          (text, index) => (
+            <ListItem button key={text} onClick={todoAlert}>
+              <ListItemText primary={text} />
+            </ListItem>
+          )
+        )}
       </List>
     </Drawer>
   );
