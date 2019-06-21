@@ -96,12 +96,11 @@ export default function TranslateCard(props): JSX.Element {
       className={classes.formControl}
       variant="outlined"
     >
-      <InputLabel htmlFor="formatted-text-mask-input" shrink={true} />
       <OutlinedInput
         labelWidth={0}
         onChange={() => {}}
         multiline
-        id="formatted-text-mask-input"
+        id="highlight-japanese-tool"
         inputComponent={JapaneseFormatterInput}
         inputProps={...{ ...props, isRomanji }}
       />
