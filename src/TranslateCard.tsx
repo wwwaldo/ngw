@@ -22,7 +22,8 @@ import {
   FormControl,
   InputLabel,
   Input,
-  OutlinedInput
+  OutlinedInput,
+  Switch
 } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -67,6 +68,46 @@ export default function TranslateCard(props): JSX.Element {
   let defaultString = props.kanjiText.split(" ").join("");
   let [isRomanji, setIsRomanji] = useState(true);
 
+  // toggle whether highlighting is shown or not.
+  let [highlighting, setHighlighting] = useState(false);
+  let A = (
+    <TextField
+      class={classes.inputPanel}
+      id="standard-multiline-flexible"
+      multiline
+      defaultValue={defaultString}
+      className={classes.textField}
+      margin="normal"
+      onChange={async e => {
+        let text = e.target.value;
+
+        props.setKanjiText(await doMecabFetch({ body: text }));
+        props.setRomanjiText(await doRomanjiFetch({ body: text }));
+      }}
+      variant="outlined"
+    />
+  );
+
+  let B = (
+    <FormControl
+      class={classes.inputPanel}
+      margin="normal"
+      fullWidth={true}
+      className={classes.formControl}
+      variant="outlined"
+    >
+      <InputLabel htmlFor="formatted-text-mask-input" shrink={true} />
+      <OutlinedInput
+        labelWidth={0}
+        onChange={() => {}}
+        multiline
+        id="formatted-text-mask-input"
+        inputComponent={JapaneseFormatterInput}
+        inputProps={...{ ...props, isRomanji }}
+      />
+    </FormControl>
+  );
+
   return (
     <Card className={classes.card}>
       <CardHeader
@@ -80,52 +121,14 @@ export default function TranslateCard(props): JSX.Element {
               <TranslateIcon fontSize="inherit" />
               {"Display Kanji/Romanji"}
             </IconButton>
-            <IconButton size="small" aria-label={"Download Flashcards?"}>
-              <DownloadIcon fontSize="inherit" />
-            </IconButton>
+            <Switch onChange={() => setHighlighting(!highlighting)}>
+              Edit/Highlight
+            </Switch>
           </div>
         }
-        title="Main"
+        title="Japanese Explorer"
       />
-      <CardContent>
-        <div className={classes.content}>
-          <div className={classes.inputPanel}>
-            <TextField
-              id="standard-multiline-flexible"
-              label="Source Text"
-              multiline
-              defaultValue={defaultString}
-              className={classes.textField}
-              margin="normal"
-              onChange={async e => {
-                let text = e.target.value;
-
-                props.setKanjiText(await doMecabFetch({ body: text }));
-                props.setRomanjiText(await doRomanjiFetch({ body: text }));
-              }}
-              variant="outlined"
-            />
-          </div>
-          <div className={classes.outputPanel}>
-            <FormControl
-              margin="normal"
-              fullWidth={true}
-              className={classes.formControl}
-              variant="outlined"
-            >
-              <InputLabel htmlFor="formatted-text-mask-input" shrink={true} />
-              <OutlinedInput
-                labelWidth={0}
-                onChange={() => {}}
-                multiline
-                id="formatted-text-mask-input"
-                inputComponent={JapaneseFormatterInput}
-                inputProps={...{ ...props, isRomanji }}
-              />
-            </FormControl>
-          </div>
-        </div>
-      </CardContent>
+      <CardContent>{highlighting ? B : A}</CardContent>
     </Card>
   );
 }
