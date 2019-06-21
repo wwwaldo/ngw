@@ -25,12 +25,16 @@ If this breaks then you should probably know what you're doing
 or trying to debug may cause you some pain.
 
 This project also depends on some common Python libraries,
-namely Flask. I use Python 3.6 (the default repository install in Ubuntu Linux distros as of this writing).
+namely Flask and pykakasi. You can grab the correct versions of these by running 
 
-I have not been as diligent with versioning my Python libraries
-since there's less turnover in the Python ecosystem.
-You can file an issue if you have tried and failed to build 
-on a Linux system.
+```
+cd server
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+You could also run just the last line if you know what you're doing. (ーー;)
 
 Finally, this project uses the `mecab` utility for parsing Japanese text
 in the backend.
