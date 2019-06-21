@@ -1,10 +1,11 @@
 # ngw
 
-My first react project.
 
 # Live Demo
 
-To-do. 
+You can visit [here](http://app.caroline-lin.com).
+
+It's not up to date with the development branch -- see [Deployment](#Deployment).
 
 # Dependencies
 
@@ -66,9 +67,9 @@ App handles Japanese input ✨out of the box✨ (somehow... don't ask me how).
 
 # Things I Should Really Do
 - Input sanitization (ーー;)
-- ??? 
-- Tests
-- Maybe more tests (enzyme?)
+- Some component testing (enzyme/jest)
+- Check out storybook for component testing as well
+  - may need to migrate to create-react-app to avoid some pain.
 
 # Your Feedback
 If you're a more experienced dev, I'd love to hear your feedback in the form of an Issue or PR!
@@ -77,21 +78,21 @@ If you're a more experienced dev, I'd love to hear your feedback in the form of 
 Ok, actually no don't do this (i'm flattered though)
 
 # Deployment
-To-do with live demo. Expose the Flask app via WSGI on personal server;
-use Makefile script to build App and deploy on Linux.
+These instructions are specific to my server setup-- an Ubuntu 18.04 VM on DigitalOcean.
+In the future I may choose to automate this (CI/CD).
 
-# More on Deployment
+Manual deployment instructions:
 
-Steps not in my makefile:
+Make venv. Used 'virtualenv' for Python3 via pip.
 
-Make venv. Used 'virtualenv'.
+exact command sequence is
 
-exact command is
-
-`cd server
+```
+cd server
 virtualenv venv
 source venv/bin/activate
-pip install -r requirements.txt`
+pip install -r requirements.txt
+```
 
 You can check that the correct venv pip is being used by running `which pip`.
 
@@ -117,5 +118,3 @@ I installed ag and entr today but didn't need to...
 
 end result: 
 Can go to `localhost:EXPOSED_PORT` to view the app from the client.
-
-todo-maybe : automake venv into Makefile.
