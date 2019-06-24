@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
-import { doDefinitionFetch } from "./japaneseUtils";
+import { doDefinitionFetch, JishoResult } from "./japaneseUtils";
 
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import ArrowBack from "@material-ui/icons/ArrowBack";
@@ -11,27 +11,23 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 import "typeface-roboto";
 
-import MockWordCard from "./MockWordCard";
-
 import {
-  IconButton,
-  TextField,
   Card,
   CardContent,
-  CardHeader,
-  FormControl,
-  InputLabel,
-  Input,
-  OutlinedInput,
   Typography,
   Button,
-  ButtonGroup,
-  Grid,
-  StepButton,
-  MobileStepper
+  MobileStepper,
+  Chip
 } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/styles";
 
 const useStyles = makeStyles(theme => ({
+  chip: {
+    margin: theme.spacing(1)
+  },
+  defArea: {
+    margin: theme.spacing(1)
+  }
   card: {
     padding: theme.spacing(0),
     display: "flex",
@@ -67,117 +63,112 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-class MyMobileStepper extends React.Component<
-  {},
-  { activeStep: number; numSteps: number }
-> {
-  constructor(props: any) {
-    super(props);
-    this.state = { activeStep: 0, numSteps: 1 };
-  }
-
-  handleNext = () => {
-    this.setState({ activeStep: this.state.activeStep + 1 });
-  };
-
-  handleBack = () => {
-    this.setState({ activeStep: this.state.activeStep - 1 });
-  };
-
-  render() {
-    let activeStep = this.state.activeStep;
-    let numSteps = this.state.numSteps;
-
-    return (
-      <div>
-        <MobileStepper
-          variant={"text"}
-          steps={numSteps}
-          position="static"
-          activeStep={activeStep}
-          className={"todo"}
-          nextButton={
-            <Button
-              size="small"
-              onClick={this.handleNext}
-              disabled={activeStep === numSteps - 1}
-            >
-              Next
-              <KeyboardArrowRight />
-            </Button>
-          }
-          backButton={
-            <Button
-              size="small"
-              onClick={this.handleBack}
-              disabled={activeStep === 0}
-            >
-              <KeyboardArrowLeft />
-              Back
-            </Button>
-          }
-        />
-      </div>
-    );
-  }
-}
-
-// test the mock word card class.
-export default function JishoWordCard({ kanji }: { kanji: string }) {
-  return <RealJishoWordCard kanji={kanji} />; //<MockWordCard kanji={kanji} />;
-}
-
-export function RealJishoWordCard({ kanji }: { kanji: string }) {
+export default function JishoWordCard({
+  kanji,
+  romanji
+}: {
+  kanji: string;
+  romanji: string;
+}) {
   const classes = useStyles();
 
-  // TODO: store the state of the API request into
-  // the button...
-
-  // Somewhat inefficient fetch for converting currently selected kanji
-  // to romanji
-  let [jishoResult, setJishoResult] = useState({
-    slug: "testing",
-    senses: ["oopsie.."]
+  let [activeStep, setActiveStep] = useState(0);
+  let [nSteps, setNSteps] = useState(1);
+  let [kanjiDefinitions, setKanjiDefinitions] = useState({
+    jlpt: "Null definition",
+    senses: [],
+    japanese: []
   });
-  const here = useRef(null);
 
-  // see https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect
-  // for explanation of second arg. is important!!
+  /* Don't mind these.. */
+  let handleBack = () => {
+    setActiveStep(prevActiveStep => {
+      // I should probably feel ashamed of myself for this
+      return (((prevActiveStep - 1) % nSteps) + nSteps) % nSteps;
+    });
+  };
+
+  let handleNext = () => {
+    setActiveStep(prevActiveStep => {
+      return (prevActiveStep + 1) % nSteps;
+    });
+  };
+  /* nothing to see here */
+
+  // Update the internal state when a new kanji is hovered over.
   useEffect(() => {
     const fetchData = async () => {
       let definitionJSON = await doDefinitionFetch(kanji);
-      setJishoResult(definitionJSON);
+
+      // update the state
+      setKanjiDefinitions(definitionJSON);
+      setNSteps(definitionJSON.senses.length);
+
+      // When a new kanji is hovered over, the active step should be reset to 0.
+      setActiveStep(0);
+
       console.log("fetched data...");
     };
     fetchData();
-    // bad non-reacty updates
-    if (here.current != null && jishoResult != null) {
-      here.current.state.numSteps = jishoResult.senses.length;
-    }
-  }, [kanji]); // ok, so including the second arg fixes the 'keeps firing lolol' issue,
-  // but messes up the state control.
-  // I think that even though this 'fixes' things that it's better to just
-  // port this particular component to a class..
-  // the other problem that I am having is that I'm using a ref to change the state of
-  // the interior mobile stepper
-  // this is because mui's mobile stepper class doesn't seem to automatically
-  // re-render when I pass in new props, which is ??
-  // oh..... wait......... could it be that this is occurring
-  // because I didn't write any class fn's? --> no i don't think so..
-  // I think that a re-render of the prop should be triggered
-  // whenever i pass a new value of a prop into my child component...
+  }, [kanji, romanji]);
 
-  function displayResults(jisho: {
-    slug: string;
-    senses: any[];
-    [key: string]: any;
-  }) {
+  function displayResults(jisho: JishoResult) {
+    // Ok, next we'll make the definition display nicer
+
     if (jisho != null) {
-      let i = 0;
-      if (here.current != null) {
-        i = here.current.state.activeStep;
+      let def = jisho.senses[activeStep];
+      if (def != null && def != undefined) {
+        return (
+          <React.Fragment>
+            <Typography color={"textPrimary"} variant={"h1"} align={"center"}>
+              {kanji}
+            </Typography>
+            <Typography color={"textSecondary"} variant={"h4"} align={"center"}>
+              {romanji}
+            </Typography>
+            <div style={{ display: "flex", paddingTop: "10%" }}>
+              <div
+                style={{
+                  flexGrow: 1,
+                  wordWrap: "break-word",
+                  paddingLeft: "5%"
+                }}
+              >
+                <Typography variant={"h6"}>Definitions.</Typography>
+                <Typography variant={"body2"}>
+                  {def.english_definitions.join(", ")}
+                </Typography>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  minWidth: "15%"
+                }}
+              >
+                <Chip
+                  color={"secondary"}
+                  variant={"outlined"}
+                  size={"small"}
+                  label={def.jlpt}
+                  className={classes.chip}
+                />
+                <Chip
+                  color={"secondary"}
+                  variant={"outlined"}
+                  size={"small"}
+                  label={"Help!"}
+                  className={classes.chip}
+                />
+
+                <Typography variant={"h6"}>`{def.jplt}</Typography>
+              </div>
+            </div>
+          </React.Fragment>
+        );
       }
-      return JSON.stringify(jisho.senses[i]);
+      return ":((";
     } else {
       return ":(";
     }
@@ -186,26 +177,32 @@ export function RealJishoWordCard({ kanji }: { kanji: string }) {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography variant={"h1"} align={"center"}>
-          {kanji}
-        </Typography>
-        <Button
-          onClick={async e => {
-            let definitionJSON = await doDefinitionFetch(kanji);
-            setJishoResult(definitionJSON);
-            console.log(jishoResult);
-          }}
-        >
-          Click me ...
-        </Button>
+        {displayResults(kanjiDefinitions)}
 
-        <Typography variant={"body1"} align={"left"}>
-          {displayResults(jishoResult)}
-        </Typography>
-
-        <div>
-          <MyMobileStepper ref={here} />
-        </div>
+        {/* When the buttons on the stepper are pressed,
+        The update functions should also update the view.*/}
+        <MobileStepper
+          style={
+            /* This is how you can specify JSX styles in CSS. */
+            {
+              flexGrow: 1
+            }
+          }
+          variant={"text"}
+          steps={nSteps}
+          position="static"
+          activeStep={activeStep}
+          nextButton={
+            <Button size="small" onClick={handleNext}>
+              <KeyboardArrowRight />
+            </Button>
+          }
+          backButton={
+            <Button size="small" onClick={handleBack}>
+              <KeyboardArrowLeft />
+            </Button>
+          }
+        />
       </CardContent>
     </Card>
   );

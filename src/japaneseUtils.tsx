@@ -111,7 +111,6 @@ export async function doRomanjiFetch(text_input: {
 export type JishoSense = { english_definitions: string[]; [key: string]: any };
 export type JishoJapaneseWord = { word: string; reading: string };
 export type JishoResult = {
-  slug: string;
   jlpt: string;
   senses: JishoSense[];
   japanese: JishoJapaneseWord[];

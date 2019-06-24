@@ -29,7 +29,7 @@ import {
   Box,
   ListSubheader
 } from "@material-ui/core";
-import { getWordIndex, doRomanjiFetch } from "./japaneseUtils";
+import { getWordIndex, doRomanjiFetch, doMecabFetch } from "./japaneseUtils";
 import { withStyles } from "@material-ui/styles";
 
 const drawerWidth = 240;
@@ -197,11 +197,26 @@ class ClassApp extends React.Component<
 function App() {
   const classes = useStyles();
 
-  // TODO: Refactor TranslateCard to update these when text field changes.
-  let [kanjiText, setKanjiText] = useState("蒼い 風 が いま");
-  let [romanjiText, setRomanjiText] = useState("aoi kaze ga ima");
-  let [selectedKanji, setSelectedKanji] = useState("が"); // todo
+  // TODO: Use a single source of truth for the input..somehow.
+  let initialText = `Explore song lyrics by hovering over the characters,
+
+白鳥 たち は そう 
+見え ない とこ で バタ 足 する んです  
+
+Input your own song lyrics by clicking the explorer.
+
+Highlighted characters' definitions pop up in the right box.
+
+Have fun!
+  `;
+
+  let [text, setText] = useState(initialText);
+  let [kanjiText, setKanjiText] = useState("");
+  let [romanjiText, setRomanjiText] = useState("");
+  let [selectedKanji, setSelectedKanji] = useState("");
   let props = {
+    text,
+    setText,
     kanjiText,
     setKanjiText,
     romanjiText,
@@ -235,19 +250,16 @@ function App() {
               flex-direction={"column"}
             >
               <Grid item xs={12}>
-                <WordCard
-                  kanji={selectedKanji}
-                  romanji={getRomanjiEquivalent(selectedKanji)}
-                />
-              </Grid>
-              <Grid item xs={12}>
                 {/* <WordCard
                   kanji={selectedKanji}
                   romanji={getRomanjiEquivalent(selectedKanji)}
                 /> */}
                 {/* Use duplicate word cards instead of a jisho card
                  because I think the re-render flexy bug is because of flexbox.*/}
-                <JishoWordCard kanji={selectedKanji} />
+                <JishoWordCard
+                  kanji={selectedKanji}
+                  romanji={getRomanjiEquivalent(selectedKanji)}
+                />
               </Grid>
             </Grid>
           </Grid>

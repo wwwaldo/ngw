@@ -65,8 +65,9 @@ const useStyles = makeStyles(theme => ({
 export default function TranslateCard(props): JSX.Element {
   const classes = useStyles();
 
-  let defaultString = props.kanjiText.split(" ").join("");
-  let [isRomanji, setIsRomanji] = useState(true);
+  //let defaultString = props.kanjiText.split(" ").join("");
+  let defaultString = props.text;
+  let [isRomanji, setIsRomanji] = useState(false);
 
   // toggle whether highlighting is shown or not.
   let [highlighting, setHighlighting] = useState(false);
@@ -81,6 +82,7 @@ export default function TranslateCard(props): JSX.Element {
       onChange={async e => {
         let text = e.target.value;
 
+        props.setText(text);
         props.setKanjiText(await doMecabFetch({ body: text }));
         props.setRomanjiText(await doRomanjiFetch({ body: text }));
       }}
