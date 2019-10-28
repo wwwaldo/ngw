@@ -4,7 +4,7 @@ A web app to help me learn Japanese (well, and maybe you too). Started with help
 
 # Live Demo
 
-You can visit [here](http://app.caroline-lin.com).
+You can visit [here](http://app.rylin.cc).
 
 It's not up to date with the development branch -- see [Deployment](#Deployment).
 
@@ -70,57 +70,10 @@ Now that's Real Web Dev!™
 ## UTF-8-encoded input?!
 App handles Japanese input ✨out of the box✨ (somehow... don't ask me how).
 
-# Things I Should Really Do
+# Things I Would Like To Do
 - Responsiveness on mobile
-- Input sanitization (ーー;)
+- Input sanitization?
 - Some component testing (enzyme/jest)
 - Check out storybook for component testing as well
-  - may need to migrate to create-react-app to avoid some pain.
+  - may need to migrate to create-react-app to avoid some pain
 
-# Your Feedback
-If you're a more experienced dev, I'd love to hear your feedback in the form of an Issue or PR!
-
-# Hire Me?!
-Ok, actually no don't do this (i'm flattered though)
-
-# Deployment
-These instructions are specific to my server setup-- an Ubuntu 18.04 VM on DigitalOcean.
-In the future I may choose to automate this (CI/CD).
-
-Manual deployment instructions:
-
-Make venv. Used 'virtualenv' for Python3 via pip.
-
-exact command sequence is
-
-```
-cd server
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-You can check that the correct venv pip is being used by running `which pip`.
-
-This installs flask, pykakasi.
-
-Also install mecab:
-
-`sudo apt-get install mecab`
-
-this uses the digitalocean mirrors of the ubuntu upstream.
-
-Then to run the dev server:
-
-Use `make build` with venv activated and wait for parcel.
-
-Use `make run-dev-server` to run a server on localhost.
-
-Use *port forwarding* on ssh to see the dev server from client laptop:
-
-`ssh -L EXPOSED_PORT:localhost:EXPOSED_PORT user@sshipaddr`
-
-I installed ag and entr today but didn't need to...
-
-end result: 
-Can go to `localhost:EXPOSED_PORT` to view the app from the client.
