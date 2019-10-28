@@ -29,7 +29,3 @@ A script to run a development server is in the Makefile. Type `make run-dev`.
 # Things I Would Like To Do
 - Responsiveness on mobile
 - Input sanitization?
-- Some component testing (enzyme/jest)
-- Check out storybook for component testing as well
-  - may need to migrate to create-react-app to avoid some pain
-
